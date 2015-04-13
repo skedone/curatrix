@@ -22,7 +22,7 @@ class SupervisorCommand extends Command {
             ->setName('run')
             ->setDefinition(array(
                 new InputOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Configuration file'),
-                new InputOption('debug', null, InputOption::VALUE_NONE, 'Run with debug flags active')
+                new InputOption('debug', null, InputOption::VALUE_NONE, 'Run with debug flags active, overriding debug flags')
             ))
             ->setDescription('Run Curatrix in a nice dress.')
             ->setHelp(<<<EOF
@@ -40,6 +40,7 @@ EOF
         $configuration = [];
 
         $file = $input->getOption('config');
+
         try {
             $configuration = Yaml::parse(@file_get_contents(__DIR__ . '/../' . $file));
         } catch(\Exception $e) {
@@ -50,8 +51,12 @@ EOF
             throw new \Exception('It seems that I can not read the configuration file.');
         }
 
-        $storage = new Storage();
-        $supervisor = new Supervisor($configuration, $storage);
-        $supervisor->handle();
+        $debug = $input->getOption('debug');
+        if($debug === true) {
+            $configuration['debug'] = true;
+        }
+
+        $curatrix = Curatrix::run($configuration);
+
     }
 }

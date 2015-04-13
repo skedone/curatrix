@@ -1,8 +1,8 @@
 <?php
 
 $count = 0;
-$random = \rand(5, 6);
+$random = \rand(15, 50);
 while($count < $random) {
-    echo 'foo ' . ++$count;
-    sleep(10000000);
+    print ++$count . ' is less than ' . $random . "\n";
+    sleep(1);
 }

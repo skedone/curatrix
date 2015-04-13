@@ -1,3 +1,9 @@
+debug: true
+provider:
+    class: FileProvider
+    parameters:
+        file: 'examples/example.yml'
+
 storage:
-    provider: RedisProvider
-    path: 'examples/example.yml'
+    class: RedisStorage
+    parameters: []

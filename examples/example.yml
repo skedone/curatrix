@@ -1,4 +1,3 @@
-
 processes:
   process_1:
     key: 'process_1'
@@ -6,5 +5,5 @@ processes:
     cmd: '/usr/bin/php examples/loop.php'
   process_2:
     key: 'process_2'
-    workers: 1
+    workers: 2
     cmd: '/usr/bin/php examples/loop.php'

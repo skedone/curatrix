@@ -4,7 +4,7 @@ namespace Curatrix;
 
 use Curatrix\Process\Process;
 use Curatrix\Process\ProcessCollection;
-use Curatrix\Provider\RedisProvider;
+use Curatrix\Provider\ProviderInterface;
 use Curatrix\Storage\StorageInterface;
 use Curatrix\System\Profiling;
 use React\EventLoop\Timer\Timer;
@@ -37,22 +37,31 @@ class Supervisor
     private $commands;
 
     /**
-     * @const float
+     * @var boolean
      */
-    const TIMER_PROCESSES_RESPAWN = 0.5;
+    private $debug;
 
     /**
      * @const float
      */
-    const TIMER_TRACK_SYESTEM = 5;
+    const TIMER_PROCESSES_RESPAWN = 1;
 
     /**
-     * @param $configuration array
+     * @const float
      */
-    public function __construct($configuration, StorageInterface $storage)
+    const TIMER_TRACK_SYESTEM = 1;
+
+    /**
+     * @param ProviderInterface $providerInterface
+     * @param StorageInterface $storageInterface
+     * @param array $options
+     */
+    public function __construct(ProviderInterface $providerInterface, StorageInterface $storageInterface, array $options = [])
     {
-        $this->provider = new RedisProvider();
-        $this->storage = $storage;
+        $this->provider = $providerInterface;
+        $this->storage = $storageInterface;
+
+        $this->debug = (empty($options['debug']) || $options === false ? false : true);
 
         $this->processes = new ProcessCollection();
         $this->loop = \React\EventLoop\Factory::create();
@@ -88,17 +97,28 @@ class Supervisor
     {
         $this->processes->clear();
 
-        $do = $this->processes->resolve($this->provider->getCommands());
+        $commands = $this->provider->getCommands();
+        print_r($commands);
+        $do = $this->processes->resolve($commands);
+
+        if($this->debug) {
+            if(count($do) < 1) {
+                print "\n ## Nothing to spawn ##\n";
+            } else {
+                print "\n ## To be spawned ##\n";
+                foreach($do as $w => $c) {
+                    print "\n" . $commands[$w]['cmd'] . " - " . $commands[$w]['key'] . " - " . $commands[$w]['workers'];
+                }
+            }
+        }
         foreach ($do as $k => $d) {
-            $command = $this->commands[$k];
+            $command = $commands[$k];
             for ($i = 0; $i < $command['workers']; $i++) {
                 $process = new Process($command['cmd']);
                 $process->setProcessKey($command['key']);
 
-                $this->loop->addPeriodicTimer(self::TIMER_TRACK_SYESTEM, function (Timer $timer) use ($command, $process) {
-                    $this->storage->send($command['key'] . '-' . $process->getPid(), Profiling::getPidInformation($process->getPid()));
-                });
                 $process->start($this->loop);
+
                 $this->processes->add($process);
             }
         }

@@ -28,10 +28,12 @@ class ProcessCollection extends Sequence {
     {
         $active = [];
         foreach($this->all() as $proc) {
-            if(empty($active[$proc->getProcessKey()])) {
-                $active[$proc->getProcessKey()] = 1;
-            } else {
-                $active[$proc->getProcessKey()] += 1;
+            if($proc instanceof Process) {
+                if(empty($active[$proc->getProcessKey()])) {
+                    $active[$proc->getProcessKey()] = 1;
+                } else {
+                    $active[$proc->getProcessKey()] += 1;
+                }
             }
         }
 

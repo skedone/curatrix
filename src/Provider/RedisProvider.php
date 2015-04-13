@@ -30,7 +30,7 @@ class RedisProvider extends AbstractProvider implements ProviderInterface {
     {
         $configuration = $this->client->get('curatrix::configuration');
         if(empty($configuration)) {
-            throw new \Exception("No configuration found inside RedisProvider.");
+            throw new \Exception("No process found inside RedisProvider.");
         }
         return \json_decode($configuration, TRUE);
     }
