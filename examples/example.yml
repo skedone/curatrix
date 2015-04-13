@@ -1,0 +1,10 @@
+
+processes:
+  process_1:
+    key: 'process_1'
+    workers: 1
+    cmd: '/usr/bin/php examples/loop.php'
+  process_2:
+    key: 'process_2'
+    workers: 1
+    cmd: '/usr/bin/php examples/loop.php'

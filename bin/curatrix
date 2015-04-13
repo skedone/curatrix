@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+set_time_limit(0);
+date_default_timezone_set('UTC');
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Curatrix\SupervisorCommand;
+
+$app = new Application();
+$app->add(new SupervisorCommand());
+$app->run();

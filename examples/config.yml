@@ -1,0 +1,3 @@
+storage:
+    provider: RedisProvider
+    path: 'examples/example.yml'
