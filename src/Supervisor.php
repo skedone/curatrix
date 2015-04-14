@@ -97,26 +97,23 @@ class Supervisor
     {
         $this->processes->clear();
 
-        $commands = $this->provider->getCommands();
-        print_r($commands);
-        $do = $this->processes->resolve($commands);
+        $cmds = $this->provider->getCommands();
 
-        if($this->debug) {
-            if(count($do) < 1) {
-                print "\n ## Nothing to spawn ##\n";
-            } else {
-                print "\n ## To be spawned ##\n";
-                foreach($do as $w => $c) {
-                    print "\n" . $commands[$w]['cmd'] . " - " . $commands[$w]['key'] . " - " . $commands[$w]['workers'];
-                }
-            }
-        }
+        $do = $this->processes->resolve($cmds);
+
         foreach ($do as $k => $d) {
-            $command = $commands[$k];
+            $command = $cmds[$k];
             for ($i = 0; $i < $command['workers']; $i++) {
                 $process = new Process($command['cmd']);
                 $process->setProcessKey($command['key']);
+                $uuid = \uniqid();
 
+                $this->loop->addPeriodicTimer(self::TIMER_TRACK_SYESTEM, function (Timer $timer) use( $uuid ) {
+                    $this->storage->worker($uuid, Profiling::getInformation());
+                });
+                $process->on('exit', function($timer) use ($uuid) {
+                    $this->storage->delete($uuid);
+                });
                 $process->start($this->loop);
 
                 $this->processes->add($process);

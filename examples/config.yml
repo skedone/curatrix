@@ -1,9 +1,0 @@
-debug: true
-provider:
-    class: FileProvider
-    parameters:
-        file: 'examples/example.yml'
-
-storage:
-    class: RedisStorage
-    parameters: []

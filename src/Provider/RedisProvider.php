@@ -13,12 +13,12 @@ class RedisProvider extends AbstractProvider implements ProviderInterface {
     /**
      *
      */
-    public function __construct()
+    public function __construct(array $configuration = [])
     {
         $this->client = new \Predis\Client([
-            'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
-            'port'   => 6379,
+            'scheme' => $configuration['scheme'] ?: 'tcp',
+            'host'   => $configuration['host'] ?: '127.0.0.1',
+            'port'   => $configuration['port'] ?: 6379,
         ]);
     }
 
@@ -28,10 +28,7 @@ class RedisProvider extends AbstractProvider implements ProviderInterface {
      */
     public function getCommands()
     {
-        $configuration = $this->client->get('curatrix::configuration');
-        if(empty($configuration)) {
-            throw new \Exception("No process found inside RedisProvider.");
-        }
-        return \json_decode($configuration, TRUE);
+        $configuration = \json_decode($this->client->get('curatrix::configuration'), TRUE);
+        return $configuration['processes'];
     }
 }

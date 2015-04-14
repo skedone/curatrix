@@ -1,0 +1,13 @@
+debug: false
+
+provider:
+    class: FileProvider
+    parameters:
+      file: examples/file-based/example.yml
+
+storage:
+    class: RedisStorage
+    parameters:
+        host: '127.0.0.1'
+        scheme: 'tcp'
+        port: 6379

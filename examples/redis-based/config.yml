@@ -1,0 +1,15 @@
+debug: false
+
+provider:
+    class: RedisProvider
+    parameters:
+        host: '127.0.0.1'
+        scheme: 'tcp'
+        port: 6379
+
+storage:
+    class: RedisStorage
+    parameters:
+        host: '127.0.0.1'
+        scheme: 'tcp'
+        port: 6379

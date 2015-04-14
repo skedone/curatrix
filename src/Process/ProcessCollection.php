@@ -27,6 +27,7 @@ class ProcessCollection extends Sequence {
     public function resolve($commands = [])
     {
         $active = [];
+
         foreach($this->all() as $proc) {
             if($proc instanceof Process) {
                 if(empty($active[$proc->getProcessKey()])) {
@@ -38,8 +39,10 @@ class ProcessCollection extends Sequence {
         }
 
         $should = [];
-        foreach($commands as $command) {
-            $should[$command['key']] = $command['workers'];
+        if(!empty($commands)) {
+            foreach($commands as $command) {
+                $should[$command['key']] = $command['workers'];
+            }
         }
 
         $do = [];
