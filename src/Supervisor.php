@@ -99,9 +99,9 @@ class Supervisor
 
         $cmds = $this->provider->getCommands();
 
-        $do = $this->processes->resolve($cmds);
+        $spawnableProcess = $this->processes->resolve($cmds);
 
-        foreach ($do as $k => $d) {
+        foreach ($spawnableProcess as $k => $d) {
             $command = $cmds[$k];
             for ($i = 0; $i < $command['workers']; $i++) {
                 $process = new Process($command['cmd']);

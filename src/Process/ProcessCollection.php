@@ -45,16 +45,16 @@ class ProcessCollection extends Sequence {
             }
         }
 
-        $do = [];
+        $spawnableProcess = [];
         foreach($should as $key => $counter) {
             if(empty($active[$key])) {
-                $do[$key] = $counter;
+                $spawnableProcess[$key] = $counter;
             }
             if(!empty($active[$key]) && $active[$key] < $counter ) {
-                $do[$key] = ($counter - $active[$key]);
+                $spawnableProcess[$key] = ($counter - $active[$key]);
             }
         }
 
-        return $do;
+        return $spawnableProcess;
     }
 }
