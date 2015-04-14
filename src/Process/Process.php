@@ -25,5 +25,4 @@ class Process extends \React\ChildProcess\Process {
     {
         $this->processKey = $processKey;
     }
-
 }

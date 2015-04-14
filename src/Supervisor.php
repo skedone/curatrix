@@ -108,9 +108,15 @@ class Supervisor
                 $process->setProcessKey($command['key']);
                 $uuid = \uniqid();
 
-                $this->loop->addPeriodicTimer(self::TIMER_TRACK_SYESTEM, function (Timer $timer) use( $uuid ) {
-                    $this->storage->worker($uuid, Profiling::getInformation());
+                $this->loop->addPeriodicTimer(self::TIMER_TRACK_SYESTEM, function (Timer $timer) use( $uuid, $process ) {
+                    if($process->isRunning()) {
+                        return $this->storage->worker($uuid, Profiling::getInformation());
+                    }
+
+                    $timer->cancel();
+                    return true;
                 });
+
                 $process->on('exit', function($timer) use ($uuid) {
                     $this->storage->delete($uuid);
                 });
