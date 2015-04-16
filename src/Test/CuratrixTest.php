@@ -17,11 +17,75 @@ class CuratrixTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers \Curatrix\Curatrix::run
+     * @expectedException \Curatrix\Exception\ConfigurationException
      */
+    public function testRunWithNoConfiguration()
+    {
+        Curatrix::run([]);
+    }
+
+    /**
+     * @covers \Curatrix\Curatrix::run
+     * @expectedException \Curatrix\Exception\ConfigurationException
+
     public function testRunWithRightConfiguration()
     {
+        $configuration = [
+            'storage' => [
+                'class' => 'RedisStorage'
+            ],
+            'provider' => [
+                'class' => 'RedisProvider'
+            ]
+        ];
 
+        $run = Curatrix::run($configuration);
+        $this->assertTrue($run);
     }
+     * */
+
+    /**
+     * @covers \Curatrix\Curatrix::getStorage
+     * @expectedException \Curatrix\Exception\ConfigurationException
+     */
+    public function testFactoryStorageNoConfiguration()
+    {
+        $configuration = array();
+        $storage = Curatrix::getStorage($configuration);
+    }
+
+    /**
+     * @covers \Curatrix\Curatrix::getProvider
+     * @expectedException \Curatrix\Exception\ConfigurationException
+     */
+    public function testFactoryProviderNoConfiguration()
+    {
+        $configuration = array();
+        $storage = Curatrix::getProvider($configuration);
+    }
+
+    /**
+     * @covers \Curatrix\Curatrix::getStorage
+     * @expectedException \Curatrix\Storage\Exception\StorageNotFoundException
+     */
+    public function testFactoryStorageWrongClass()
+    {
+        $configuration = array();
+        $configuration['storage']['class'] = 'NotFoundStorage';
+        $storage = Curatrix::getStorage($configuration);
+    }
+
+    /**
+     * @covers \Curatrix\Curatrix::getProvider
+     * @expectedException \Curatrix\Provider\Exception\ProviderNotFoundException
+     */
+    public function testFactoryProviderWrongClass()
+    {
+        $configuration = array();
+        $configuration['provider']['class'] = 'NotFoundProvider';
+        $storage = Curatrix::getProvider($configuration);
+    }
+
 
     /**
      * @covers \Curatrix\Curatrix::getStorage

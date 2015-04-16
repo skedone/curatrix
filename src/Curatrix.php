@@ -2,12 +2,16 @@
 
 namespace Curatrix;
 
+use Curatrix\Exception\ConfigurationException;
+use Curatrix\Provider\Exception\ProviderNotFoundException;
+use Curatrix\Storage\Exception\StorageNotFoundException;
+
 class Curatrix {
 
     public static function run(array $configuration = array())
     {
         if(empty($configuration)) {
-            throw new \Exception('You must provide a configuration file for Curatrix');
+            throw new ConfigurationException('You must provide a configuration file for Curatrix');
         }
 
         $storage = self::getStorage($configuration);
@@ -22,11 +26,15 @@ class Curatrix {
 
     public static function getStorage(array $configuration = array())
     {
+        if(empty($configuration['storage']['class'])) {
+            $message = "You must provide a class for the storage.";
+            throw new ConfigurationException($message);
+        }
         $namespace = "Curatrix\\Storage";
         $storageNameSpace = join('\\', [$namespace, $configuration['storage']['class']]);
         if (!class_exists($storageNameSpace)) {
             $message = "The storage for $storageNameSpace is not available.";
-            throw new \Exception($message);
+            throw new StorageNotFoundException($message);
         }
 
         $parameters = empty($configuration['storage']['parameters']) ? [] : $configuration['storage']['parameters'];
@@ -35,11 +43,15 @@ class Curatrix {
 
     public static function getProvider(array $configuration = array())
     {
+        if(empty($configuration['provider']['class'])) {
+            $message = "You must provide a class for the provider.";
+            throw new ConfigurationException($message);
+        }
         $namespace = "Curatrix\\Provider";
         $providerNameSpace = join('\\', [$namespace, $configuration['provider']['class']]);
         if (!class_exists($providerNameSpace)) {
             $message = "The provider for $providerNameSpace is not available.";
-            throw new \Exception($message);
+            throw new ProviderNotFoundException($message);
         }
 
         $parameters = empty($configuration['provider']['parameters']) ? [] : $configuration['provider']['parameters'];

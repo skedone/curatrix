@@ -3,9 +3,11 @@
     <testsuites>
         <testsuite name="Curatrix Test Suite">
             <directory>./src/Test/</directory>
+            <exclude>./vendor</exclude>
         </testsuite>
     </testsuites>
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
+        <log type="coverage-html" target="build/logs/html"/>
     </logging>
 </phpunit>
