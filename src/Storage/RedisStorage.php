@@ -15,9 +15,9 @@ class RedisStorage extends AbstractStorage implements StorageInterface {
     public function __construct(array $configuration = [])
     {
         $this->client = new \Predis\Client([
-            'scheme' => $configuration['scheme'] ?: 'tcp',
-            'host'   => $configuration['host'] ?: '127.0.0.1',
-            'port'   => $configuration['port'] ?: 6379,
+            'scheme' => (empty($configuration['scheme']) ? 'tcp' : $configuration['scheme']),
+            'host'   => (empty($configuration['host']) ? '127.0.0.1' : $configuration['host']),
+            'port'   => (empty($configuration['port']) ? 6379 : $configuration['port']),
         ]);
     }
 

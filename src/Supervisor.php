@@ -120,6 +120,7 @@ class Supervisor
                 $process->on('exit', function($timer) use ($uuid) {
                     $this->storage->delete($uuid);
                 });
+
                 $process->start($this->loop);
 
                 $this->processes->add($process);

@@ -29,7 +29,8 @@ class Curatrix {
             throw new \Exception($message);
         }
 
-        return new $storageNameSpace($configuration['storage']['parameters']);
+        $parameters = empty($configuration['storage']['parameters']) ? [] : $configuration['storage']['parameters'];
+        return new $storageNameSpace($parameters);
     }
 
     public static function getProvider(array $configuration = array())
@@ -41,6 +42,7 @@ class Curatrix {
             throw new \Exception($message);
         }
 
-        return new $providerNameSpace($configuration['provider']['parameters']);
+        $parameters = empty($configuration['provider']['parameters']) ? [] : $configuration['provider']['parameters'];
+        return new $providerNameSpace($parameters);
     }
 }
